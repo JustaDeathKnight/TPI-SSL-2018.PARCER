@@ -1,0 +1,232 @@
+/*---------------- Area1: Codigo de Usuario -----------------*/
+
+//-------> Paquetes e Importaciones
+
+package Analizador_Sintactico;
+
+import java_cup.runtime.Symbol;
+import java.util.ArrayList;
+import java.util.LinkedList;
+
+//------> Codigo contenedor del parser, metodos y variables
+
+parser code
+{:
+    public static LinkedList<Tabla_Error> Tabla_ERROR_SINTAX = new LinkedList<Tabla_Error>();
+
+    //Metodo llamado automaticamente al encontrar algun error Sintactico
+    public void syntax_error(Symbol s)
+    {
+        String lexema = s.value.toString();
+        int fila = s.right;
+        int columna = s.left;
+        
+        System.out.println("Error Sintáctico, La Sentencia de Entrada no está completa");
+        System.out.println("\tLexema: "+lexema);
+        System.out.println("\tFila: "+fila);
+        System.out.println("\tColumna: "+columna);
+
+        Tabla_Error datos = new Tabla_Error(lexema, fila, columna, "Error Sintactico", "Caracter no esperado");
+
+        /*-- Tabla_ERROR_SINTAX-> tabla de errores sintácticos --*/
+        Tabla_ERROR_SINTAX.add(datos);
+    }
+
+    //Metodo llamado en el momento en el que ya no es posible la recuperacion de errores
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception
+    {        
+        String lexema = s.value.toString();
+        int fila = s.right;
+        int columna = s.left;
+        
+        Interface.Area_de_Resultado.setText("Resultado del Análisis: \n \n");
+        Interface.Area_de_Resultado.append("Error Sintáctico, No es posible continuar con el Análisis! \n");
+        Interface.Area_de_Resultado.append(" Hint:\n");
+        Interface.Area_de_Resultado.append("\tLexema: "+ lexema +" \n");
+        Interface.Area_de_Resultado.append("\tFila: "+ fila +" \n");
+        Interface.Area_de_Resultado.append("\tColumna: "+ columna +" \n");
+
+        Tabla_Error datos = new Tabla_Error(lexema, fila, columna, "Error Sintactico", "Caracter no esperado");
+        Tabla_ERROR_SINTAX.add(datos);
+     
+    }
+:}
+
+/*------------- Area2: Declaraciones -------------*/
+
+//-----> Declaracion de TERMINALES
+
+    //----> Terminales de Palabras Reservadas
+        terminal TKN_CREATE, TKN_TABLE, TKN_SELECT, TKN_FROM, TKN_WHERE, 
+            TKN_GROUP, TKN_ORDER, TKN_BY, TKN_NOT, TKN_TODO, TKN_PRIMARY,
+            TKN_KEY, TKN_NULL;
+        
+    //----> Terminales de Funciones de SQL
+
+    terminal TKN_COUNT, TKN_AVG, TKN_SUM, TKN_MIN, TKN_MAX;
+
+    //----> Terminales de Tipos de Datos
+        terminal TKN_VARCHAR, TKN_CHAR, TKN_STRING, TKN_INTEG;
+        //terminal TKN_FLOAT;
+
+    //----> Terminales de Simbolos
+        terminal TKN_APAR, TKN_CPAR, TKN_PTOCOMA, TKN_PTO, TKN_COMA, TKN_MEN, 
+            TKN_MAY, TKN_MAYIGU, TKN_MENIGU, TKN_IGUAL, TKN_DIST, TKN_AND, TKN_OR,
+            TKN_APOST;
+        //terminal TKN_PLUS, TKN_MINUS, TKN_DIVID;
+
+    //----> Terminales de Expresiones Regulares
+        terminal TKN_ID, TKN_INT;
+
+//-----> Declaracion de NO TERMINALES
+
+    //----> NO Terminales de Palabras Reservadas y Simbolos
+        non terminal String N_TKN_APAR, N_TKN_CPAR, N_TKN_ID, N_TKN_INT, N_TKN_INTEG, 
+            N_TKN_STRING, N_TKN_COMA, N_TKN_WHERE, N_TKN_NOT, N_TKN_ORDER, N_TKN_GROUP, 
+            N_TKN_BY, N_TKN_IGUAL, N_TKN_APOST, N_TKN_SELECT, N_TKN_AND, N_TKN_OR, N_TKN_MEN, 
+            N_TKN_MAY, N_TKN_MAYIGU, N_TKN_MENIGU, N_TKN_DIST, N_TKN_CREATE, N_TKN_TABLE, 
+            N_TKN_FROM, N_TKN_PTO, N_TKN_COUNT, N_TKN_AVG, N_TKN_SUM, N_TKN_MIN, N_TKN_MAX, 
+            N_TKN_TODO, N_TKN_VARCHAR, N_TKN_CHAR, N_TKN_PRIMARY, N_TKN_KEY, N_TKN_NULL;
+
+    //----> NO Terminales de referencia de estructura
+        non terminal String INICIO, X, Cre, Y, P_c;
+        non terminal String E_T, E_STR, E_NUM, E_VCH, E_CHR, S, Z, S_E, F, R_Col, R_Tab, A, B, C, 
+            W, O_B, G_B, Cond, R_Camp, N_AO, N_OP, Head, T_ASIG, T_INT, F_ESTRUCTURA, F_SQL
+            , C_INT, C_ID, P_KEY, N_NULL, R_ID; 
+
+//-----> PRECEDENCIAS 
+
+start with INICIO;
+
+/*------------------ Area3: Reglas Semanticas ------------------*/
+
+INICIO::= X;
+
+//-----> Producciones NO TERMINALES de estructura
+
+X::= Cre Y P_c | S P_c | S Z P_c | Cre Y P_c X | S P_c X | S Z P_c X;
+    Cre::= N_TKN_CREATE N_TKN_TABLE N_TKN_ID;
+        
+    Y::= N_TKN_APAR E_T N_TKN_CPAR;
+        E_T::= E_NUM | E_STR | E_VCH | E_CHR
+            | E_NUM N_TKN_COMA E_T | E_NUM N_TKN_COMA P_KEY
+            | E_STR N_TKN_COMA E_T | E_STR N_TKN_COMA P_KEY
+            | E_VCH N_TKN_COMA E_T | E_VCH N_TKN_COMA P_KEY
+            | E_CHR N_TKN_COMA E_T | E_CHR N_TKN_COMA P_KEY;
+
+            E_NUM::= N_TKN_ID N_TKN_INTEG | N_TKN_ID N_TKN_INTEG C_INT
+                   | N_TKN_ID N_TKN_INTEG N_NULL | N_TKN_ID N_TKN_INTEG C_INT N_NULL;
+            E_STR::= N_TKN_ID N_TKN_STRING | N_TKN_ID N_TKN_STRING C_INT
+                   | N_TKN_ID N_TKN_STRING N_NULL | N_TKN_ID N_TKN_STRING C_INT N_NULL;
+            E_VCH::= N_TKN_ID N_TKN_VARCHAR C_INT
+                   | N_TKN_ID N_TKN_VARCHAR C_INT N_NULL;
+            E_CHR::= N_TKN_ID N_TKN_CHAR C_INT | N_TKN_ID N_TKN_CHAR
+                   | N_TKN_ID N_TKN_CHAR C_INT N_NULL | N_TKN_ID N_TKN_CHAR N_NULL;
+
+            C_INT::= N_TKN_APAR N_TKN_INT N_TKN_CPAR;
+            N_NULL::= N_TKN_NOT N_TKN_NULL | N_TKN_NOT N_TKN_NULL N_TKN_PRIMARY N_TKN_KEY;
+            P_KEY::= N_TKN_PRIMARY N_TKN_KEY N_TKN_APAR C_ID N_TKN_CPAR;
+            C_ID::= N_TKN_ID | N_TKN_ID N_TKN_COMA C_ID;
+    
+    S::= S_E F ;
+        S_E::= N_TKN_SELECT R_Tab | N_TKN_SELECT F_ESTRUCTURA ;
+        R_Tab::= N_TKN_ID | N_TKN_TODO | N_TKN_ID N_TKN_PTO R_Tab | N_TKN_ID N_TKN_COMA R_Tab;
+        F_ESTRUCTURA::= F_SQL N_TKN_APAR N_TKN_ID N_TKN_CPAR;
+        F::= N_TKN_FROM R_Col;
+        R_Col::= N_TKN_ID | N_TKN_ID N_TKN_COMA R_Col ;
+        F_SQL::= N_TKN_COUNT
+                |N_TKN_AVG
+                |N_TKN_SUM
+                |N_TKN_MIN
+                |N_TKN_MAX;
+        
+    
+    Z::= A | B | C | A B | A C | B C | A B C;
+        A::= W Cond;
+        B::= O_B R_Col;
+        C::= G_B R_Col;
+        W::= N_TKN_WHERE | N_TKN_WHERE N_TKN_NOT;
+        O_B::= N_TKN_ORDER N_TKN_BY;
+        G_B::= N_TKN_GROUP N_TKN_BY;
+        R_Camp::= N_TKN_ID | N_TKN_ID N_TKN_PTO R_Camp;
+
+        Cond::= R_Camp N_OP R_Camp | R_Camp N_OP T_ASIG 
+
+            | R_Camp N_OP T_INT | T_INT N_OP R_Camp
+
+            |  Cond N_AO N_TKN_APAR Cond N_TKN_CPAR
+            |  Cond N_AO Head;
+
+        Head::= R_Camp N_OP R_Camp | R_Camp N_OP T_ASIG
+            |R_Camp N_OP T_INT | T_INT N_OP R_Camp;  
+       
+        T_ASIG::= N_TKN_APOST R_ID N_TKN_APOST;
+        R_ID::= N_TKN_ID | N_TKN_ID R_ID;
+        T_INT::= N_TKN_INT;
+
+        N_AO::= N_TKN_AND | N_TKN_OR;
+        N_OP::= N_TKN_MEN
+               |N_TKN_MAY
+               |N_TKN_MAYIGU
+               |N_TKN_MENIGU
+               |N_TKN_IGUAL
+               |N_TKN_DIST;
+
+                
+//-----> Producciones TERMINALES
+    
+    //-----> Producciones TERMINALES Palabras Reservadas
+
+    N_TKN_CREATE::= TKN_CREATE {: Interface.Area_de_Resultado.append("CREATE "); :}; 
+    N_TKN_TABLE::= TKN_TABLE {: Interface.Area_de_Resultado.append("TABLE "); :};
+    N_TKN_SELECT::= TKN_SELECT {: Interface.Area_de_Resultado.append("SELECT "); :};
+    N_TKN_FROM::= TKN_FROM {: Interface.Area_de_Resultado.append("\nFROM "); :};
+    N_TKN_WHERE::= TKN_WHERE {: Interface.Area_de_Resultado.append("\nWHERE "); :}; 
+    N_TKN_GROUP::= TKN_GROUP {: Interface.Area_de_Resultado.append("\nGROUP "); :};     
+    N_TKN_ORDER::= TKN_ORDER {: Interface.Area_de_Resultado.append("\nORDER "); :}; 
+    N_TKN_BY::= TKN_BY {: Interface.Area_de_Resultado.append("BY "); :}; 
+    N_TKN_NOT::= TKN_NOT {: Interface.Area_de_Resultado.append("NOT "); :}; 
+    N_TKN_TODO::= TKN_TODO {: Interface.Area_de_Resultado.append("TODO* "); :}; 
+    N_TKN_PRIMARY::= TKN_PRIMARY {: Interface.Area_de_Resultado.append("PRIMARY "); :};
+    N_TKN_KEY::= TKN_KEY {: Interface.Area_de_Resultado.append("KEY "); :}; 
+    N_TKN_NULL::= TKN_NULL {: Interface.Area_de_Resultado.append("NULL "); :}; 
+
+    //-----> Producciones TERMINALES Funciones SQL
+    
+    N_TKN_COUNT::= TKN_COUNT {: Interface.Area_de_Resultado.append("COUNT "); :}; 
+    N_TKN_AVG::= TKN_AVG {: Interface.Area_de_Resultado.append("AVG "); :}; 
+    N_TKN_SUM::= TKN_SUM {: Interface.Area_de_Resultado.append("SUM "); :}; 
+    N_TKN_MIN::= TKN_MIN {: Interface.Area_de_Resultado.append("MIN "); :}; 
+    N_TKN_MAX::= TKN_MAX {: Interface.Area_de_Resultado.append("MAX "); :}; 
+
+    //-----> Producciones TERMINALES Tipos de Datos
+    
+    N_TKN_VARCHAR::= TKN_VARCHAR {: Interface.Area_de_Resultado.append("VARCHAR "); :}; 
+    N_TKN_CHAR::= TKN_CHAR {: Interface.Area_de_Resultado.append("CHAR "); :}; 
+    N_TKN_STRING::= TKN_STRING {: Interface.Area_de_Resultado.append("STRING "); :};
+    N_TKN_INTEG::= TKN_INTEG {: Interface.Area_de_Resultado.append("INTEGER "); :};
+
+    //-----> Producciones TERMINALES Simbolos
+
+    N_TKN_APAR::= TKN_APAR {: Interface.Area_de_Resultado.append("A_PAR \n"); :};
+    N_TKN_CPAR::= TKN_CPAR {: Interface.Area_de_Resultado.append("\n" +"C_PAR "); :};
+    N_TKN_PTO::= TKN_PTO {: Interface.Area_de_Resultado.append("PTO "); :};
+    N_TKN_COMA::= TKN_COMA {: Interface.Area_de_Resultado.append("COMA "); :};
+    N_TKN_MEN::= TKN_MEN {: Interface.Area_de_Resultado.append("MEN "); :};
+    N_TKN_MAY::= TKN_MAY {: Interface.Area_de_Resultado.append("MAY "); :};
+    N_TKN_MAYIGU::= TKN_MAYIGU {: Interface.Area_de_Resultado.append("MAY_IGUAL "); :};
+    N_TKN_MENIGU::= TKN_MENIGU {: Interface.Area_de_Resultado.append("MEN_IGUAL "); :};
+    N_TKN_IGUAL::= TKN_IGUAL {: Interface.Area_de_Resultado.append("IGUAL "); :};
+    N_TKN_DIST::= TKN_DIST {: Interface.Area_de_Resultado.append("DISTINTO "); :};
+    N_TKN_AND::= TKN_AND {: Interface.Area_de_Resultado.append("AND "); :};
+    N_TKN_OR::= TKN_OR {: Interface.Area_de_Resultado.append("OR "); :};
+    
+    N_TKN_APOST::= TKN_APOST {: Interface.Area_de_Resultado.append("APOST "); :}; 
+
+    P_c::= TKN_PTOCOMA {: Interface.Area_de_Resultado.append("PTO_COMA" + "\n \n ** La Sentencia de entrada ha sido aceptada ** \n \n" ); :};
+
+    //-----> Producciones TERMINALE Expresiones Regulares
+       
+    N_TKN_ID::= TKN_ID {: Interface.Area_de_Resultado.append("'ID' "); :};
+    N_TKN_INT::= TKN_INT {: Interface.Area_de_Resultado.append("'INT' "); :};
+      
