@@ -1,0 +1,11 @@
+SELECT AVG (Nombre_De_Columna)
+FrOm Nombre_de_Tabla
+WheRE A != C AND (A >= 10);
+
+SELECT SUM (Nombre_De_Columna)
+FrOm Nombre_de_Tabla
+WheRE K <= C AND (A >= 10);
+
+SELECT MAX (Nombre_De_Columna)
+FrOm Nombre_de_Tabla
+WheRE K <= C OR (A > 10);

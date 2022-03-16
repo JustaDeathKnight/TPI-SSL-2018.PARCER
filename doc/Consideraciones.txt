@@ -1,0 +1,24 @@
+1.Consideraciones
+
+1ra Entrega:
+
+	Para la realización del analizador léxico utilizamos el lenguaje de programación JAVA, y la herramienta JFlex con la IDE NetBeans 8.2 y JDK 8.1.7.1 en Windows 10. Durante el proceso de implementación del JFlex no se presentaron mayores inconvenientes debido a las guías y documentación que disponíamos.
+	Como resultado obtuvimos un archivo Analizador_Lexico.jar, el cual para su ejecución requiere de la JVM (Java Virtual Machine).
+	Los métodos de entrada se realizan manualmente mediante la interfaz gráfica que se ejecuta al abrir el archivo .jar. No esta implementada la funcionalidad de ingresar el directorio de un archivo de tipo texto para su analisis.
+	El ingreso mediante pantalla generará un archivo llamado "fichero.txt", donde es guardado el contenido ingresado y el mismo es utilizado para ejecutar el análisis; debido a que Jflex solo admite la entrada java.io.Reader.
+	Para el reconocimiento de las palabras reservadas en SQL solo se admiten mayusculas, de lo contrario serán reconocidas como ID.
+	En el caso de no reconocer alguna sentencia se mostrara un mensaje de error continuando con las siguientes sentencias.
+
+
+2da Entrega:
+
+	Para la realización del analizador léxico utilizamos el lenguaje de programación JAVA, y la herramienta JFlex 1.6.1 y CUP 11b con la IDE NetBeans 8.2 y JDK 8.1.7.1 en Windows 10. Durante el proceso de implementación del JFlex y CUP no se presentaron mayores inconvenientes debido a las guías y documentación que disponíamos.
+	Como resultado obtuvimos un archivo Analizador_Sintactico.jar, el cual para su ejecución requiere de la JVM (Java Virtual Machine).
+	Los métodos de entrada se realizan manualmente mediante la interfaz gráfica que se ejecuta al abrir el archivo .jar. Ya se encuentra implementada la funcionalidad de ingresar un archivo de tipo texto (mediante el file chooser) para su analisis, el cual escribe el contenido del archivo en la ventana de ingreso de texto. En el caso de intentar abrir un archivo distinto a *.txt el programa informará que el archivo no es compatible.
+	El ingreso mediante pantalla generará un archivo llamado "entrada.txt", donde es guardado el contenido ingresado y el mismo es utilizado para ejecutar el análisis; debido a que Jflex solo admite la entrada java.io.Reader.
+	Para el reconocimiento de las palabras reservadas en SQL ya se admite la posibilidad de mezclar Mayusculas y Minusculas dado que CUP contiene una funcion llamada %ignorecase que permite que esto se pueda hacer.
+	En el caso de no reconocer alguna sentencia se mostrara un mensaje de error mostrando donde se encontró el error.
+
+Algunas consideraciones: para el ingreso de texto de la siguiente forma  'Juan pedro' en las sentencias WHERE solo se admite la utilizacion de apostrofes y no comillas simples. 
+	Intentamos contemplar la mayor cantidad de opciones posibles que pudiesen tener las estructuras de CREATE y SELECT, no teniendo control sobre contenidos repetibles como ID, las sentencias PRIMARY KEY, y otros.
+	Se adjunta una serie de ejemplos utilizados y creados para conocer el comportamiento del analizador sintactico.

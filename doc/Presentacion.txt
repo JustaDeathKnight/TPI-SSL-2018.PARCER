@@ -1,0 +1,49 @@
+UNIVERSIDAD TECNOLÓGICA NACIONAL
+FACULTAD REGIONAL RESISTENCIA
+INGENIERÍA EN SISTEMAS DE INFORMACIÓN
+SINTAXIS Y SEMANTICA DE LOS LENGUAJES
+TPI Analizador Léxico 1ra entrega
+
+Integrantes:
+•	Acevedo, Ariel Alexander.
+•	Obregón, Elías Javier.
+•	Thouzeau, Edgardo Hernán.
+
+Comisión: 2° “A”
+AÑO 2018
+
+Analisador SINTACTICO (2 entrega. Final)
+
+El analizador sintáctico, también llamado parser, recibe como entrada los tokens que le pasa el
+Analizador Léxico (el analizador sintártico no maneja directamente caracteres) y comprueba si
+esos tokens van llegando en el orden correcto (orden permitido por el lenguaje). Así pues, sus
+funciones son:
+- Aceptar lo que es válido sintácticamente y rechazar lo que no lo es.
+- Hacer explícito el orden jerárquico que tienen los operadores en el lenguaje de que se trate.
+- Guiar el proceso de traducción (traducción dirigida por la sintaxis).
+Para esta etapa se solicita la construcción de una Gramática que genere el lenguaje a reconocer
+
+Algunas restricciónes para facilitar el trabajo e implementación:
+
+*Una sentencia SQL se compone de al menos de la clausula SELECT y FROM. La clausula
+WHERE, ORDER BY y GROUP BY son opcionales.
+*Si aparecen todas, el orden es: SELECT, FROM, WHERE, ORDER BY y GROUP BY.
+* Los nombres de palabras reservadas e identificadores no son case sensitive.
+* No se pueden definir dos tablas con el mismo nombre y dentro de una tabla, no puede haber
+dos columnas con el mismo nombre.
+* Las columnas referenciadas en las cláusulas SELECT y WHERE deben cumplir:
+– Si se usó la forma tabla.columna, entonces tabla debe estar mencionada en la cláusula
+FROM y columna debe pertenecer a esa tabla.
+– Si se usó la forma columna, debe haber exactamente una tabla mencionada en la
+cláusula FROM que tenga una columna con ese nombre.
+* Las comparaciones sólo se pueden hacer entre campos o constantes de igual tipo.
+* En la clausula SELECT pueden aparecer varios identificadores separados por comas, o
+funciones de agregados.
+* Los identificadores pueden venir indicados mediante el atributo o bien mediante
+nombre_de_la_tabla.atributo.
+* En la clausula FROM pueden aparecer varios nombres de tablas separados por comas.
+* En la clausula WHERE pueden aparecer combinaciones de expresiones relacionales y
+operadores lógicos. Los operadores lógicos tienen mayor prioridad que los relacionales y que
+puede existir anidamiento en las expresiones.
+* Supondremos que el programador puede escribir más de una sentencia SQL consecutiva. Una
+sentencia viene separada de otra por el carácter ;

@@ -1,0 +1,35 @@
+CREATE TABLE cliente
+( codigo INTEGER, nombre STRING ) ;
+
+CREATE TABLE factura
+( codigo INteGER, codcli INTEGER , importe INTEGER ) ;
+
+SELECT cliente.nombre, importe
+FROM cliente, factura
+WHERE codcli = cliente.codigo
+AND (importe > a00 OR nombre = 'Juan') ;
+
+SElect codigo
+FROM cliente
+WHERE nombre = 'Juan';
+
+SElect codigo
+FROM cliente
+WHERE nombre = 'Juan' 
+ORDER BY Cli, CLientes
+Group BY ñsk;  
+
+SElect codigo
+FROM cliente
+WHERE nombre = 'Juan' 
+ORDER BY Cli, CLientes;  
+
+SElect codigo
+FROM cliente
+WHERE nombre = 'Juan' 
+Group BY Cli, CLientes;  
+
+SElect codigo
+FROM cliente 
+ORDER BY Cli, CLientes
+Group BY ñsk;
